@@ -5,12 +5,12 @@ import { Spinner, Button } from "@blueprintjs/core";
 export default inject("issueStore", "sessionStore", "viewStore")(
   observer(
     class IssueList extends React.Component {
-      constructor({ issueStore, sessionStore ,repo}) {
+      constructor({ issueStore, sessionStore, repo }) {
         super();
         this.state = {
           issues: null
         },
-        issueStore.fetchIssues(repo);
+          issueStore.fetchIssues(repo);
       }
       renderIssueList() {
         const { sessionStore, issueStore, repo } = this.props;
@@ -39,7 +39,6 @@ export default inject("issueStore", "sessionStore", "viewStore")(
             case FULFILLED: {
               const issues = this.state.issues = issueStore.issuesDeferred.value;
               return issues.map((issue) => {
-                console.log("just about to get data");
                 return <div key={issue.id}>
                   #{issue.number} {issue.title} > <a href={issue.html_url} target="_blank">watch on github</a>
                 </div>;

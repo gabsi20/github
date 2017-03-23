@@ -4,15 +4,15 @@ import { fromPromise, REJECTED } from "mobx-utils";
 export default class IssueStore {
   constructor({ githubAPI, sessionStore }) {
     extendObservable(this, {
-      issueDeferred: null,
+      issuesDeferred: null,
       fetchIssues: action("fetchIssues", ( repo )=>{
         if (this.repo !== repo) this.issuesDeferred = null;
         when(
           // condition
           () =>
             sessionStore.authenticated &&
-            (this.issueDeferred === null ||
-              this.issueDeferred.state === REJECTED),
+            (this.issuesDeferred === null ||
+              this.issuesDeferred.state === REJECTED),
           // ... then
           () => {
             const userDeferred = sessionStore.userDeferred;
