@@ -2,7 +2,7 @@ import React from "react";
 import { observer, inject } from "mobx-react";
 import { PENDING, REJECTED, FULFILLED } from "mobx-utils";
 import { Spinner, Button } from "@blueprintjs/core";
-export default inject("repoStore", "sessionStore")(
+export default inject("repoStore", "sessionStore", "viewStore")(
   observer(
     class RepositoryList extends React.Component {
       constructor({ repoStore, sessionStore }) {
@@ -10,7 +10,7 @@ export default inject("repoStore", "sessionStore")(
         repoStore.fetchRepos();
       }
       renderRepoList() {
-        const {sessionStore, repoStore} = this.props;
+        const { sessionStore, repoStore, viewStore } = this.props;
 
         if (sessionStore.authenticated) {
           const repoDeferred = repoStore.repoDeferred;
@@ -26,17 +26,21 @@ export default inject("repoStore", "sessionStore")(
                     className="pt-non-ideal-state-visual pt-non-ideal-state-icon"
                   >
                     <span className="pt-icon pt-icon-error" />
-                  </div> 
+                  </div>
                   <h4 className="pt-non-ideal-state-title">Error occured</h4>
                   <div className="pt-non-ideal-state-description">
-                    <Button onClick={repoStore.fetchRepos} text="retry"/>
+                    <Button onClick={repoStore.fetchRepos} text="retry" />
                   </div>
                 </div>
               );
             }
             case FULFILLED: {
               const repos = repoDeferred.value;
-              // TODO: implement list of repos
+              return repos.map((repo) => {
+                return <div onClick={() => viewStore.push(viewStore.routes.issue({ repo: repo.name }))}>
+                  {repo.html_url}
+                </div>;
+              });
               break;
             }
             default: {
