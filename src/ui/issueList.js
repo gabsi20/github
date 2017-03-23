@@ -2,19 +2,21 @@ import React from "react";
 import { observer, inject } from "mobx-react";
 import { PENDING, REJECTED, FULFILLED } from "mobx-utils";
 import { Spinner, Button } from "@blueprintjs/core";
-export default inject("repoStore", "sessionStore", "viewStore")(
+export default inject("issueStore", "sessionStore", "viewStore")(
   observer(
-    class RepositoryList extends React.Component {
-      constructor({ repoStore, sessionStore }) {
+    class IssueList extends React.Component {
+      constructor({ issueStore, sessionStore ,repo}) {
         super();
-        repoStore.fetchRepos();
+        this.state = {
+          issues: null
+        },
+        issueStore.fetchIssues(repo);
       }
-      renderRepoList() {
-        const { sessionStore, repoStore, viewStore } = this.props;
+      renderIssueList() {
+        const { sessionStore, issueStore, repo } = this.props;
 
         if (sessionStore.authenticated) {
-          const repoDeferred = repoStore.repoDeferred;
-          const state = repoDeferred.state;
+          const state = issueStore.issuesDeferred.state;
           switch (state) {
             case PENDING: {
               return <Spinner />;
@@ -29,16 +31,17 @@ export default inject("repoStore", "sessionStore", "viewStore")(
                   </div>
                   <h4 className="pt-non-ideal-state-title">Error occured</h4>
                   <div className="pt-non-ideal-state-description">
-                    <Button onClick={repoStore.fetchRepos} text="retry" />
+                    <Button onClick={issueStore.fetchIssues} text="retry" />
                   </div>
                 </div>
               );
             }
             case FULFILLED: {
-              const repos = repoDeferred.value;
-              return repos.map((repo) => {
-                return <div key={repo.html_url} onClick={() => viewStore.push(viewStore.routes.issue({ repo: repo.name }))}>
-                  {repo.html_url}
+              const issues = this.state.issues = issueStore.issuesDeferred.value;
+              return issues.map((issue) => {
+                console.log("just about to get data");
+                return <div key={issue.id}>
+                  #{issue.number} {issue.title} > <a href={issue.html_url} target="_blank">watch on github</a>
                 </div>;
               });
               break;
@@ -54,8 +57,8 @@ export default inject("repoStore", "sessionStore", "viewStore")(
       render() {
         return (
           <div>
-            <h1>Repos</h1>
-            {this.renderRepoList()}
+            <h1>issues</h1>
+            {this.renderIssueList()}
           </div>
         );
       }

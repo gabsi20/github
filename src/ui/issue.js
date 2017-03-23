@@ -6,6 +6,7 @@ import { fromPromise } from "mobx-utils";
 import { Button, Intent, Toaster, Position } from "@blueprintjs/core";
 import validatorjs from "validatorjs";
 import FormInput from './formInput';
+import IssueList from './issueList';
 
 const plugins = { dvr: validatorjs };
 
@@ -96,7 +97,9 @@ export default inject("issueStore")(
             <div>
             <h3>issue for {route.params.repo}</h3>
             <FormComponent />
+            <IssueList repo={route.params.repo} />
             </div>
+            
           </Provider>
         );
       }
