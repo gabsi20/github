@@ -13,7 +13,7 @@ import "./index.css";
 
 // wire up dependencies
 const githubAPI = new GithubAPI({ 
-  userToken: "e1ee0744f87186125f468ea4ade77674cb7979cd"
+  userToken: "44f915d2755fc22536f1241cbb3ff1d2be8b836c"
 });
 const sessionStore = new SessionStore({ githubAPI });
 const viewStore = new ViewStore();
